@@ -1,20 +1,20 @@
-const mongodb = require('mongodb');
+const mongodb = require("mongodb");
 
-const db = require('../data/database');
+const db = require("../data/database");
 
 class Order {
   // Status => pending, fulfilled, cancelled
-  constructor(cart, userData, status = 'pending', date, orderId) {
+  constructor(cart, userData, status = "pending", date, orderId) {
     this.productData = cart;
     this.userData = userData;
     this.status = status;
     this.date = new Date(date);
     if (this.date) {
-      this.formattedDate = this.date.toLocaleDateString('en-US', {
-        weekday: 'short',
-        day: 'numeric',
-        month: 'long',
-        year: 'numeric',
+      this.formattedDate = this.date.toLocaleDateString("en-US", {
+        weekday: "short",
+        day: "numeric",
+        month: "long",
+        year: "numeric",
       });
     }
     this.id = orderId;
@@ -37,7 +37,7 @@ class Order {
   static async findAll() {
     const orders = await db
       .getDb()
-      .collection('orders')
+      .collection("orders")
       .find()
       .sort({ _id: -1 })
       .toArray();
@@ -50,8 +50,8 @@ class Order {
 
     const orders = await db
       .getDb()
-      .collection('orders')
-      .find({ 'userData._id': uid })
+      .collection("orders")
+      .find({ "userData._id": uid })
       .sort({ _id: -1 })
       .toArray();
 
@@ -61,7 +61,7 @@ class Order {
   static async findById(orderId) {
     const order = await db
       .getDb()
-      .collection('orders')
+      .collection("orders")
       .findOne({ _id: new mongodb.ObjectId(orderId) });
 
     return this.transformOrderDocument(order);
@@ -72,7 +72,7 @@ class Order {
       const orderId = new mongodb.ObjectId(this.id);
       return db
         .getDb()
-        .collection('orders')
+        .collection("orders")
         .updateOne({ _id: orderId }, { $set: { status: this.status } });
     } else {
       const orderDocument = {
@@ -82,7 +82,7 @@ class Order {
         status: this.status,
       };
 
-      return db.getDb().collection('orders').insertOne(orderDocument);
+      return db.getDb().collection("orders").insertOne(orderDocument);
     }
   }
 }
